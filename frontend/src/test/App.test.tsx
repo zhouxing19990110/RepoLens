@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
@@ -55,8 +55,9 @@ describe('repository workflow', () => {
     expect(requests).toHaveLength(2);
     requests[1]({ ...sample, full_name: 'acme/new-repo', url: 'https://github.com/acme/new-repo' });
     expect(await screen.findByRole('link', { name: 'acme/new-repo' })).toBeInTheDocument();
-    requests[0](sample);
-    await waitFor(() => expect(screen.queryByRole('link', { name: sample.full_name })).not.toBeInTheDocument());
+    await act(async () => { requests[0](sample); });
+    expect(screen.queryByRole('link', { name: sample.full_name })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'acme/new-repo' })).toBeInTheDocument();
   });
 
   it('refreshes pending activity and retains it until the new result arrives', async () => {
