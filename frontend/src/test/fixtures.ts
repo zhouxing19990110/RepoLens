@@ -17,7 +17,7 @@ export const assessed: Assessment = {
     documentation: { score: 70, explanation: 'README covers usage.', evidence: ['readme'] },
     community: { score: 65, explanation: 'Some public interest.', evidence: ['community'] },
   },
-  evidence: { metadata: 'Pushed recently', readme: '<script>unsafe</script> README text', community: '12 stars' },
+  evidence: { metadata: 'Pushed recently', readme: '<script>unsafe</script> README text', community: 'Open issues: 0.' },
   limitations: ['Private maintenance work is not visible.'], provider: 'Example AI', model: 'example-model',
   assessed_at: '2026-09-28T02:00:00Z',
 };

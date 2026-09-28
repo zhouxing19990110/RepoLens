@@ -4,7 +4,7 @@ Date: 2026-09-28 (Asia/Shanghai). This page separates deterministic checks from 
 
 | Check | Command | Result |
 | --- | --- | --- |
-| Backend | `.\.venv\Scripts\python.exe -m pytest backend/tests -q` | **86 passed**, 1 dependency warning; no failures. |
+| Backend | `.\.venv\Scripts\python.exe -m pytest backend/tests -q` | **88 passed**, 1 dependency warning; no failures. |
 | Frontend tests | `npm test` in `frontend` | **21 passed** across 3 files. |
 | TypeScript | `npm run typecheck` in `frontend` | Passed. |
 | Frontend build | `npm run build` in `frontend` | Passed; Vite 7.1.7 built 35 modules. |
@@ -13,7 +13,7 @@ The backend warning comes from FastAPI's test client importing Starlette's depre
 
 ## Repaired cases and offline evidence
 
-The first live GitHub request through the app returned a sanitized 502 because inherited proxy settings caused `httpx` connection failure on this host. A direct diagnostic request to the same GitHub endpoint returned HTTP 200 with `trust_env=False`. The app's GitHub and AI lifecycle clients now use `trust_env=False` while retaining TLS verification. A lifecycle regression test checks this setting on both clients. The missing-license label now reads **Not detected**. The frontend assessment fixture now uses the backend's `metadata`, `readme`, and `community` evidence IDs; its weighted score is **73** for 80/70/65. Malformed server-configured AI URLs now disable assessment before any GitHub fetch; a route test checks this behavior.
+The first live GitHub request through the app returned a sanitized 502 because inherited proxy settings caused `httpx` connection failure on this host. A direct diagnostic request to the same GitHub endpoint returned HTTP 200 with `trust_env=False`. The app's GitHub and AI lifecycle clients now use `trust_env=False` while retaining TLS verification. A lifecycle regression test checks this setting on both clients. The missing-license label now reads **Not detected**. The frontend assessment fixture now uses the backend's `metadata`, `readme`, and `community` evidence IDs; its weighted score is **73** for 80/70/65. The community evidence string matches the backend's open-count format. Malformed server-configured AI URLs, including an empty trailing `?` or `#`, now disable assessment before any GitHub fetch; route tests check this behavior.
 
 The automated suite covers URL validation, GitHub response mappings, partial and pending data, cache timing, evidence and weighted score validation, route errors, frontend request races, charts, and AI disabled/error states. Mocked transport and fixture values in these tests are **offline evidence**, not claims about live GitHub or an AI provider.
 

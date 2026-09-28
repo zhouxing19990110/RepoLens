@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     def ai_available(self) -> bool:
         if not (self.ai_api_key and self.ai_base_url and self.ai_model):
             return False
+        if "?" in self.ai_base_url or "#" in self.ai_base_url:
+            return False
         try:
             url = urlsplit(self.ai_base_url.rstrip("/"))
             url.port

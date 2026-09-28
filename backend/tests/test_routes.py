@@ -1,3 +1,4 @@
+import pytest
 from fastapi.testclient import TestClient
 
 from app.config import Settings
@@ -61,10 +62,13 @@ def test_ai_disabled_returns_safe_error_before_upstream(client_with_ai_disabled)
     assert repository.calls == assessment.calls == []
 
 
-def test_malformed_configured_ai_url_is_rejected_before_github_fetch(route_clients):
+@pytest.mark.parametrize("ai_base_url", (
+    "http://provider.example/v1", "https://provider.example/v1?", "https://provider.example/v1#",
+))
+def test_malformed_configured_ai_url_is_rejected_before_github_fetch(route_clients, ai_base_url):
     client, repository, assessment = route_clients
     client.app.state.settings = Settings(
-        ai_api_key="private-ai-key", ai_base_url="http://provider.example/v1",
+        ai_api_key="private-ai-key", ai_base_url=ai_base_url,
         ai_model="model", _env_file=None,
     )
     response = client.post("/api/repositories/assess", json={"url": "https://github.com/a/b"})
