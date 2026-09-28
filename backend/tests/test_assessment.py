@@ -1,9 +1,12 @@
+import asyncio
+import gzip
 import json
 from datetime import datetime, timezone
 
 import httpx
 import pytest
 
+import app.assessment as assessment_module
 from app.assessment import AssessmentService, weighted_score
 from app.config import Settings
 from app.errors import RepoLensError
@@ -151,3 +154,46 @@ async def test_configured_url_with_userinfo_is_rejected_before_request():
         with pytest.raises(RepoLensError) as exc:
             await service.assess(snapshot())
     assert exc.value.code == "ai_unavailable"
+
+
+@pytest.mark.asyncio
+async def test_compressed_provider_response_is_rejected_before_decoding():
+    data = json.dumps(completion({"dimensions": dimensions(), "limitations": []})).encode()
+    compressed = gzip.compress(data)
+    calls = []
+
+    def handler(request):
+        calls.append(request)
+        return httpx.Response(200, headers={"content-encoding": "gzip"}, content=compressed)
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        service = AssessmentService(client, Settings(_env_file=None, ai_api_key="key", ai_base_url="https://provider.example/v1", ai_model="model"))
+        with pytest.raises(RepoLensError) as exc:
+            await service.assess(snapshot())
+    assert exc.value.code == "ai_invalid_response"
+    assert calls[0].headers["accept-encoding"] == "identity"
+
+
+class _SlowStream(httpx.AsyncByteStream):
+    async def __aiter__(self):
+        await asyncio.sleep(0.02)
+        yield b" "
+        await asyncio.sleep(0.04)
+        yield json.dumps(completion({"dimensions": dimensions(), "limitations": []})).encode()
+
+
+@pytest.mark.asyncio
+async def test_total_deadline_covers_slow_stream(monkeypatch):
+    monkeypatch.setattr(assessment_module, "_TOTAL_TIMEOUT_SECONDS", 0.03, raising=False)
+    calls = []
+
+    def handler(request):
+        calls.append(request)
+        return httpx.Response(200, stream=_SlowStream())
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        service = AssessmentService(client, Settings(_env_file=None, ai_api_key="key", ai_base_url="https://provider.example/v1", ai_model="model"))
+        with pytest.raises(RepoLensError) as exc:
+            await service.assess(snapshot())
+    assert exc.value.code == "ai_timeout"
+    assert len(calls) == 1

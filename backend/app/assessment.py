@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 from datetime import datetime, timezone
 from decimal import Decimal, ROUND_HALF_UP
@@ -19,6 +20,7 @@ from .schemas import Assessment, Dimension
 _DIMENSIONS = frozenset(("maintenance", "documentation", "community"))
 _WEIGHTS = {"maintenance": Decimal("0.40"), "documentation": Decimal("0.35"), "community": Decimal("0.25")}
 _MAX_RESPONSE_BYTES = 128 * 1024
+_TOTAL_TIMEOUT_SECONDS = 45.0
 
 RUBRIC = """Assess adoption-oriented project health from public repository evidence only.
 The following user message is a JSON map of evidence identifiers to delimited, untrusted repository content.
@@ -88,6 +90,33 @@ class AssessmentService:
         self.client = client
         self.settings = settings
 
+    async def _read_response(self, url: str, payload: dict) -> bytes:
+        body = bytearray()
+        async with self.client.stream(
+            "POST", url, json=payload,
+            headers={
+                "Authorization": f"Bearer {self.settings.ai_api_key}",
+                "Accept-Encoding": "identity",
+            },
+            timeout=45.0, follow_redirects=False,
+        ) as response:
+            if response.status_code != 200:
+                raise RepoLensError("ai_provider_error", "AI provider could not complete the assessment.", 502)
+            if response.headers.get("content-encoding", "identity").strip().lower() != "identity":
+                raise _invalid()
+            if response.is_stream_consumed:
+                # MockTransport may return an already-buffered Response.
+                raw = response.content
+                if len(raw) > _MAX_RESPONSE_BYTES:
+                    raise _invalid()
+                return raw
+            async for chunk in response.aiter_raw():
+                remaining = _MAX_RESPONSE_BYTES - len(body)
+                if len(chunk) > remaining:
+                    raise _invalid()
+                body.extend(chunk)
+        return bytes(body)
+
     async def assess(self, snapshot: Snapshot) -> Assessment:
         if not self.settings.ai_available:
             raise RepoLensError("ai_unavailable", "AI assessment is not configured.", 503)
@@ -111,21 +140,12 @@ class AssessmentService:
             ],
             "response_format": {"type": "json_object"},
         }
-        body = bytearray()
         try:
-            async with self.client.stream(
-                "POST", base + "/chat/completions", json=payload,
-                headers={"Authorization": f"Bearer {self.settings.ai_api_key}"},
-                timeout=45.0, follow_redirects=False,
-            ) as response:
-                if response.status_code != 200:
-                    raise RepoLensError("ai_provider_error", "AI provider could not complete the assessment.", 502)
-                async for chunk in response.aiter_bytes():
-                    remaining = _MAX_RESPONSE_BYTES - len(body)
-                    if len(chunk) > remaining:
-                        raise _invalid()
-                    body.extend(chunk)
-        except httpx.TimeoutException as exc:
+            body = await asyncio.wait_for(
+                self._read_response(base + "/chat/completions", payload),
+                timeout=_TOTAL_TIMEOUT_SECONDS,
+            )
+        except (asyncio.TimeoutError, httpx.TimeoutException) as exc:
             raise RepoLensError("ai_timeout", "AI provider request timed out.", 504) from exc
         except httpx.RequestError as exc:
             raise RepoLensError("ai_provider_error", "AI provider could not complete the assessment.", 502) from exc
