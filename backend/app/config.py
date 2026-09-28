@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -19,4 +20,13 @@ class Settings(BaseSettings):
 
     @property
     def ai_available(self) -> bool:
-        return bool(self.ai_api_key and self.ai_base_url and self.ai_model)
+        if not (self.ai_api_key and self.ai_base_url and self.ai_model):
+            return False
+        try:
+            url = urlsplit(self.ai_base_url.rstrip("/"))
+            url.port
+        except ValueError:
+            return False
+        return bool(url.scheme == "https" and url.hostname and not (
+            url.username or url.password or url.query or url.fragment
+        ))

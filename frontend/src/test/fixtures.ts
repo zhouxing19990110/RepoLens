@@ -11,13 +11,13 @@ export const sample: Analysis = {
 };
 
 export const assessed: Assessment = {
-  full_name: sample.full_name, status: 'assessed', overall_score: 72,
+  full_name: sample.full_name, status: 'assessed', overall_score: 73,
   dimensions: {
-    maintenance: { score: 80, explanation: 'Recent public activity.', evidence: ['recent_push'] },
-    documentation: { score: 70, explanation: 'README covers usage.', evidence: ['readme_excerpt'] },
-    community: { score: 65, explanation: 'Some public interest.', evidence: ['stars'] },
+    maintenance: { score: 80, explanation: 'Recent public activity.', evidence: ['metadata'] },
+    documentation: { score: 70, explanation: 'README covers usage.', evidence: ['readme'] },
+    community: { score: 65, explanation: 'Some public interest.', evidence: ['community'] },
   },
-  evidence: { recent_push: 'Pushed recently', readme_excerpt: '<script>unsafe</script> README text', stars: '12 stars' },
+  evidence: { metadata: 'Pushed recently', readme: '<script>unsafe</script> README text', community: '12 stars' },
   limitations: ['Private maintenance work is not visible.'], provider: 'Example AI', model: 'example-model',
   assessed_at: '2026-09-28T02:00:00Z',
 };

@@ -31,7 +31,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        async with httpx.AsyncClient() as github_http, httpx.AsyncClient() as ai_http:
+        async with httpx.AsyncClient(trust_env=False) as github_http, httpx.AsyncClient(trust_env=False) as ai_http:
             cache = TTLCache()
             app.state.github_client = github_http
             app.state.ai_client = ai_http

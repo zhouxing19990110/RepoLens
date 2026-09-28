@@ -42,6 +42,8 @@ def test_settings_are_optional_and_ai_requires_all_fields(monkeypatch):
     assert not settings.ai_available
     assert Settings(ai_api_key="secret", ai_base_url="https://ai.example/v1", ai_model="model", _env_file=None).ai_available
     assert not Settings(ai_api_key="secret", ai_base_url="", ai_model="model", _env_file=None).ai_available
+    for url in ("http://ai.example/v1", "https://user:password@ai.example/v1", "https://ai.example:broken/v1", "https://ai.example/v1?key=x"):
+        assert not Settings(ai_api_key="secret", ai_base_url=url, ai_model="model", _env_file=None).ai_available
 
 
 def test_request_forbids_provider_configuration():

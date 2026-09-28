@@ -17,7 +17,7 @@ export function Overview({ analysis }: { analysis: Analysis }) {
       <span className="repository-pill">Public repository</span>
     </div>
     <p className="description">{analysis.description || 'No repository description provided.'}</p>
-    <div className="meta-line"><span>License: {analysis.license || 'License not specified'}</span><span>Last push: {date(analysis.pushed_at)}</span></div>
+    <div className="meta-line"><span>License: {analysis.license || 'Not detected'}</span><span>Last push: {date(analysis.pushed_at)}</span></div>
     <div className="metric-grid">
       <div className="metric-card"><span>Stars</span><strong>{count(analysis.stars)}</strong></div>
       <div className="metric-card"><span>Forks</span><strong>{count(analysis.forks)}</strong></div>

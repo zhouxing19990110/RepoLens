@@ -61,6 +61,18 @@ def test_ai_disabled_returns_safe_error_before_upstream(client_with_ai_disabled)
     assert repository.calls == assessment.calls == []
 
 
+def test_malformed_configured_ai_url_is_rejected_before_github_fetch(route_clients):
+    client, repository, assessment = route_clients
+    client.app.state.settings = Settings(
+        ai_api_key="private-ai-key", ai_base_url="http://provider.example/v1",
+        ai_model="model", _env_file=None,
+    )
+    response = client.post("/api/repositories/assess", json={"url": "https://github.com/a/b"})
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "ai_unavailable"
+    assert repository.calls == assessment.calls == []
+
+
 def test_lifespan_shares_services_and_closes_http_clients():
     app = create_app(Settings(_env_file=None))
     with TestClient(app) as client:
@@ -70,6 +82,8 @@ def test_lifespan_shares_services_and_closes_http_clients():
         assert app.state.repository_service.github.client is github_http
         assert app.state.repository_service.cache is app.state.cache
         assert app.state.assessment_service.client is ai_http
+        assert github_http._trust_env is False
+        assert ai_http._trust_env is False
         assert not github_http.is_closed
         assert not ai_http.is_closed
     assert github_http.is_closed

@@ -29,7 +29,7 @@ describe('repository workflow', () => {
     finish(sample);
     expect(await screen.findByRole('link', { name: sample.full_name })).toHaveAttribute('href', sample.url);
     expect(screen.getByText(sample.description!)).toBeInTheDocument();
-    expect(screen.getByText(/license not specified/i)).toBeInTheDocument();
+    expect(screen.getByText(/license: not detected/i)).toBeInTheDocument();
     expect(screen.getByTestId('issues-count')).toHaveTextContent('0');
     expect(screen.getByTestId('pull-requests-count')).toHaveTextContent('Unavailable');
     expect(screen.getByText(/pull request count unavailable/i)).toBeInTheDocument();
@@ -94,7 +94,7 @@ describe('independent AI assessment', () => {
     expect(screen.getByRole('status')).toHaveTextContent(/assessing/i);
     expect(screen.getByRole('button', { name: /assess project health/i })).toBeDisabled();
     await act(async () => { finish(assessed); });
-    expect(screen.getByText('72/100')).toBeInTheDocument();
+    expect(screen.getByText('73/100')).toBeInTheDocument();
     expect(screen.getByText(/AI estimate/i)).toBeInTheDocument();
     expect(screen.getByText(/Maintenance \(40%\)/i)).toBeInTheDocument();
     expect(screen.getByText(/Documentation \(35%\)/i)).toBeInTheDocument();
@@ -113,7 +113,7 @@ describe('independent AI assessment', () => {
     render(<AssessmentPanel repositoryUrl={sample.url} enabled />);
     await userEvent.click(screen.getByRole('button', { name: /assess project health/i }));
     expect(await screen.findByText(/insufficient evidence/i)).toBeInTheDocument();
-    expect(screen.queryByText('72/100')).toBeNull();
+    expect(screen.queryByText('73/100')).toBeNull();
     expect(screen.getByText('Score unavailable')).toBeInTheDocument();
   });
 
@@ -144,7 +144,7 @@ describe('independent AI assessment', () => {
     await screen.findByRole('link', { name: 'acme/new-repo' });
     await waitFor(() => expect(signal.aborted).toBe(true));
     await act(async () => { finish(assessed); });
-    expect(screen.queryByText('72/100')).toBeNull();
+    expect(screen.queryByText('73/100')).toBeNull();
     expect(screen.getByRole('button', { name: /assess project health/i })).toBeInTheDocument();
   });
 });
