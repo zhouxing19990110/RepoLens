@@ -25,9 +25,13 @@ At **2026-09-28 06:39:52 UTC**, Chrome headless via Playwright rendered the loca
 
 At **2026-09-28 06:41:50 UTC**, the actual browser sent a request through Vite and FastAPI to live GitHub. The UI displayed the safe message “GitHub rate limit reached. Try again later.” This confirms the visible rate-limit path, not repository metrics.
 
+After the quota reset, at **2026-09-28 07:09:56 UTC**, Chrome rendered a **live, unintercepted** `pallets/flask` response through the same Vite → FastAPI → GitHub path. At both 1440×1000 and 375×812, the report showed 74,803 stars, 17,007 forks, all five data sections available, no warnings, and the AI-disabled message. There was no horizontal overflow or page JavaScript error; both live screenshots were visually inspected.
+
 ## Live GitHub verification
 
-At **2026-09-28 06:39:12 UTC**, after the proxy repair and backend restart, an actual app request for `pallets/flask` returned **429** with `upstream_rate_limited`. Independent upstream metadata and language requests both returned **403**. GitHub's `/rate_limit` response showed the anonymous quota exhausted: limit 60, used 60, remaining 0, with reset at **2026-09-28 07:06:58 UTC**. The app mapped this condition to a safe, actionable error. **Live stars, forks, and language-byte comparison could not be verified** because GitHub was rate limited; commit activity and other optional sections were not obtained in this attempt. No automatic retry was made.
+At **2026-09-28 07:08:52 UTC**, after the anonymous quota reset, the actual app returned **200** for `pallets/flask`; independent upstream metadata and language requests also returned **200**. The app and upstream values matched exactly: **74,803 stars**, **17,007 forks**, and language bytes of **Python 565,759**, **HTML 405**, **Shell 193**, and **CSS 18**. GitHub was still preparing commit activity at that instant, so the app reported `activity: pending` with a refresh warning. At **07:09:56 UTC**, a subsequent live browser request returned all five sections as `available` with no warnings. The upstream comparison directly verifies stars, forks, and language bytes; it does not independently compare the issue, pull request, README, or commit activity payloads.
+
+The earlier post-repair attempt at **06:39:12 UTC** returned **429** with `upstream_rate_limited`; independent upstream metadata and language requests returned **403**. GitHub's `/rate_limit` response showed the anonymous quota exhausted: limit 60, used 60, remaining 0, with reset at **07:06:58 UTC**. The app mapped that condition to a safe, actionable error. No automatic retry was made during the exhausted-quota period.
 
 Before the repair, the app returned a 502 caused by inherited proxy settings. A separate direct diagnostic around **2026-09-28 05:14 UTC** reached GitHub and observed 74,803 stars and 17,007 forks, but it did not pass through the repaired app and is **not** a live app-to-upstream metrics comparison.
 
