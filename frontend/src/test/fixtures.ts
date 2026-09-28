@@ -1,4 +1,4 @@
-import type { Analysis } from '../types';
+import type { Analysis, Assessment } from '../types';
 
 export const sample: Analysis = {
   full_name: 'octocat/Hello-World', url: 'https://github.com/octocat/Hello-World',
@@ -8,4 +8,16 @@ export const sample: Analysis = {
   activity: Array.from({ length: 12 }, (_, i) => ({ week_start: 1780000000 + i * 604800, commits: i })),
   availability: { issues: 'available', pull_requests: 'unavailable', languages: 'available', activity: 'available', readme: 'available' },
   warnings: ['Pull request count unavailable.'], retrieved_at: '2026-09-28T01:00:00Z', ai_available: false,
+};
+
+export const assessed: Assessment = {
+  full_name: sample.full_name, status: 'assessed', overall_score: 72,
+  dimensions: {
+    maintenance: { score: 80, explanation: 'Recent public activity.', evidence: ['recent_push'] },
+    documentation: { score: 70, explanation: 'README covers usage.', evidence: ['readme_excerpt'] },
+    community: { score: 65, explanation: 'Some public interest.', evidence: ['stars'] },
+  },
+  evidence: { recent_push: 'Pushed recently', readme_excerpt: '<script>unsafe</script> README text', stars: '12 stars' },
+  limitations: ['Private maintenance work is not visible.'], provider: 'Example AI', model: 'example-model',
+  assessed_at: '2026-09-28T02:00:00Z',
 };

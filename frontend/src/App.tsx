@@ -4,6 +4,7 @@ import { RepositoryForm } from './components/RepositoryForm';
 import { Overview } from './components/Overview';
 import { LanguageChart } from './components/LanguageChart';
 import { ActivityChart } from './components/ActivityChart';
+import { AssessmentPanel } from './components/Assessment';
 import type { Analysis } from './types';
 import './styles.css';
 
@@ -52,6 +53,7 @@ export default function App() {
         <Overview analysis={analysis} />
         {analysis.warnings.length > 0 && <div className="notice warning-notice" aria-label="Partial data warnings"><strong>Some data could not be retrieved</strong><ul>{analysis.warnings.map((warning, index) => <li key={index}>{warning}</li>)}</ul></div>}
         <div className="chart-grid"><LanguageChart languages={analysis.languages} availability={analysis.availability.languages} /><ActivityChart activity={analysis.activity} availability={analysis.availability.activity} onRefresh={() => void load(analysis.url, true)} /></div>
+        <AssessmentPanel key={analysis.full_name} repositoryUrl={analysis.url} enabled={analysis.ai_available} />
       </div> : !loading && !error && <div className="empty-prompt"><span aria-hidden="true">⌁</span><p>Your repository report will appear here.</p></div>}
     </main>
     <footer>RepoLens <span>·</span> Public GitHub data, retrieved on demand</footer>
