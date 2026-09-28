@@ -1,11 +1,20 @@
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
+from datetime import datetime, timezone
+
+import httpx
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
+from .assessment import AssessmentService
+from .cache import TTLCache
 from .config import Settings
 from .errors import RepoLensError
+from .github import GitHubClient
+from .repositories import RepositoryService
+from .routes import router
 
 
 def _error_response(code: str, message: str, status_code: int, retry_after_seconds: int | None = None) -> JSONResponse:
@@ -17,9 +26,26 @@ def _error_response(code: str, message: str, status_code: int, retry_after_secon
     )
 
 
-def create_app() -> FastAPI:
-    app = FastAPI(title="RepoLens")
-    app.state.settings = Settings()
+def create_app(settings: Settings | None = None) -> FastAPI:
+    resolved_settings = settings if settings is not None else Settings()
+
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        async with httpx.AsyncClient() as github_http, httpx.AsyncClient() as ai_http:
+            cache = TTLCache()
+            app.state.github_client = github_http
+            app.state.ai_client = ai_http
+            app.state.cache = cache
+            app.state.repository_service = RepositoryService(
+                GitHubClient(github_http, resolved_settings.github_token),
+                cache, resolved_settings.ai_available, lambda: datetime.now(timezone.utc),
+            )
+            app.state.assessment_service = AssessmentService(ai_http, resolved_settings)
+            yield
+
+    app = FastAPI(title="RepoLens", lifespan=lifespan)
+    app.state.settings = resolved_settings
+    app.include_router(router)
 
     @app.exception_handler(RepoLensError)
     async def domain_error(_request: Request, error: RepoLensError) -> JSONResponse:
