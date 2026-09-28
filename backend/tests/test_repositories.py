@@ -1,8 +1,12 @@
 from datetime import datetime, timezone
+import json
 
+import httpx
 import pytest
 
+from app.assessment import AssessmentService
 from app.cache import TTLCache
+from app.config import Settings
 from app.errors import RepoLensError
 from app.repositories import RepositoryService, Snapshot
 
@@ -122,6 +126,34 @@ async def test_pending_activity_retries_and_empty_readme_is_disclosed():
     github.activity_result = ("empty", [])
     await s.analyze("https://github.com/owner/repo")
     assert len([c for c in github.calls if c[0] == "repository"]) == 2
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("activity_state", ["pending", "unavailable"])
+async def test_assessment_prompt_dates_metadata_without_activity(activity_state):
+    github = StubGitHub()
+    if activity_state == "pending":
+        github.activity_result = ("pending", [])
+    else:
+        github.fail.add("activity")
+    snapshot = await service(github).analyze("https://github.com/owner/repo")
+    sent = []
+
+    def handler(request):
+        sent.append(json.loads(request.content))
+        content = {"dimensions": {
+            name: {"score": 50, "explanation": "Public evidence", "evidence": ["metadata"]}
+            for name in ("maintenance", "documentation", "community")}, "limitations": []}
+        return httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {"content": json.dumps(content)}}]})
+
+    settings = Settings(_env_file=None, ai_api_key="test-key", ai_base_url="https://provider.example/v1", ai_model="test-model")
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        await AssessmentService(client, settings).assess(snapshot)
+
+    prompt = json.loads(sent[0]["messages"][1]["content"])
+    assert prompt == snapshot.evidence
+    assert "2026-09-28T12:00:00+00:00" in prompt["metadata"]
+    assert "activity" not in prompt
 
 
 @pytest.mark.asyncio

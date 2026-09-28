@@ -168,6 +168,7 @@ class RepositoryService:
 
         metadata_evidence = [
             f"Repository: {full_name}.",
+            f"Snapshot retrieved at: {retrieved_at.isoformat()} (UTC).",
             f"Description: {description}." if description else "Description is missing.",
             f"Stars: {stars}; forks: {forks}.",
             f"Last push: {pushed_at.isoformat()}." if pushed_at else "Last push time is unavailable.",

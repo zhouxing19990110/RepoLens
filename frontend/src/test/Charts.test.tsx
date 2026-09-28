@@ -12,6 +12,14 @@ describe('metrics charts', () => {
     expect(screen.getByText('100')).toBeInTheDocument();
   });
 
+  it('rounds fractional percentage labels while keeping raw bar width and exact bytes', () => {
+    render(<LanguageChart languages={[{ name: 'Python', bytes: 1, percentage: 100 / 3 }]} availability="available" />);
+    expect(screen.getByText('33.33%')).toBeInTheDocument();
+    expect(screen.queryByText(`${100 / 3}%`)).not.toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: '1' })).toBeInTheDocument();
+    expect(document.querySelector('.bar-fill')).toHaveStyle({ width: `${100 / 3}%` });
+  });
+
   it.each(['empty', 'pending', 'unavailable'] as const)('explains %s language data', (availability) => {
     render(<LanguageChart languages={[]} availability={availability} />);
     expect(screen.getByTestId('language-state')).toHaveTextContent(availability === 'empty' ? /no language data/i : availability === 'pending' ? /being prepared/i : /unavailable/i);
