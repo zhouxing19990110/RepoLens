@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import re
 from typing import Literal
 
@@ -39,7 +40,31 @@ class GitHubClient:
         return f"/repos/{owner}/{repo}"
 
     @staticmethod
-    def _raise_for_status(response: httpx.Response) -> None:
+    async def _secondary_rate_limited(response: httpx.Response) -> bool:
+        limit = 4096
+        try:
+            body = response.content
+        except httpx.ResponseNotRead:
+            bounded = bytearray()
+            async for chunk in response.aiter_bytes():
+                bounded.extend(chunk[:limit + 1 - len(bounded)])
+                if len(bounded) > limit:
+                    break
+            body = bytes(bounded)
+        if len(body) > limit:
+            return False
+        try:
+            payload = json.loads(body)
+        except (ValueError, UnicodeDecodeError):
+            return False
+        message = payload.get("message") if isinstance(payload, dict) else None
+        return isinstance(message, str) and (
+            "secondary rate limit" in message.lower()
+            or "abuse detection mechanism" in message.lower()
+        )
+
+    @classmethod
+    async def _raise_for_status(cls, response: httpx.Response) -> None:
         status = response.status_code
         if 200 <= status < 300:
             return
@@ -48,6 +73,7 @@ class GitHubClient:
         if status == 429 or (status == 403 and (
             response.headers.get("x-ratelimit-remaining") == "0"
             or "retry-after" in response.headers
+            or await cls._secondary_rate_limited(response)
         )):
             retry_header = response.headers.get("retry-after", "")
             retry = int(retry_header) if retry_header.isdecimal() else None
@@ -65,7 +91,7 @@ class GitHubClient:
             raise RepoLensError("upstream_timeout", "GitHub request timed out.", 504) from exc
         except httpx.RequestError as exc:
             raise RepoLensError("upstream_error", "GitHub could not provide this data.", 502) from exc
-        self._raise_for_status(response)
+        await self._raise_for_status(response)
         return response
 
     @staticmethod
@@ -127,7 +153,7 @@ class GitHubClient:
                 ) as response:
                     if response.status_code == 404:
                         return "empty", ""
-                    self._raise_for_status(response)
+                    await self._raise_for_status(response)
                     async for chunk in response.aiter_bytes():
                         remaining = _README_BYTES - len(content)
                         if len(chunk) > remaining:

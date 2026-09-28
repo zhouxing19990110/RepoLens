@@ -48,6 +48,35 @@ async def test_status_mapping(status, headers, expected, retry):
 
 
 @pytest.mark.asyncio
+async def test_secondary_rate_limit_without_headers_is_429_but_authorization_is_502():
+    messages = [
+        ("You have exceeded a secondary rate limit. Please wait a few minutes.", 429),
+        ("Resource not accessible by integration", 502),
+    ]
+    for upstream_message, expected in messages:
+        async with httpx.AsyncClient(transport=httpx.MockTransport(
+            lambda request: httpx.Response(403, headers={"x-ratelimit-remaining": "42"}, json={"message": upstream_message})
+        )) as http:
+            with pytest.raises(RepoLensError) as caught:
+                await GitHubClient(http, None).repository("a", "b")
+        assert caught.value.status_code == expected
+        assert upstream_message not in caught.value.message
+        assert caught.value.retry_after_seconds is None
+
+
+@pytest.mark.asyncio
+async def test_streamed_readme_secondary_rate_limit_is_429():
+    def handler(request):
+        return httpx.Response(403, json={"message": "You have exceeded a secondary rate limit."})
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http:
+        with pytest.raises(RepoLensError) as caught:
+            await GitHubClient(http, None).readme("a", "b")
+    assert caught.value.status_code == 429
+    assert "secondary" not in caught.value.message.lower()
+
+
+@pytest.mark.asyncio
 async def test_timeout_and_malformed_json():
     def timeout(request):
         raise httpx.ReadTimeout("secret", request=request)
