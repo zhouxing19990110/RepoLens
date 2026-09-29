@@ -197,3 +197,17 @@ async def test_total_deadline_covers_slow_stream(monkeypatch):
             await service.assess(snapshot())
     assert exc.value.code == "ai_timeout"
     assert len(calls) == 1
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('language, expected', [('zh', 'Simplified Chinese'), ('en', 'English')])
+async def test_assessment_output_language(language, expected):
+    seen = []
+    def handler(request):
+        seen.append(json.loads(request.content))
+        return httpx.Response(200, json=completion({'dimensions': dimensions(), 'limitations': []}))
+    settings = Settings(_env_file=None, ai_api_key='secret', ai_base_url='https://provider.example/v1', ai_model='configured')
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        result = await AssessmentService(client, settings).assess(snapshot(), language=language)
+    assert result.language == language
+    assert f'Write every explanation and limitation in {expected}' in seen[0]['messages'][0]['content']
+    assert json.loads(seen[0]['messages'][1]['content']) == snapshot().evidence

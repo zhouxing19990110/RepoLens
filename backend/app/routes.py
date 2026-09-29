@@ -8,7 +8,7 @@ from .assessment import AssessmentService
 from .config import Settings
 from .errors import RepoLensError
 from .repositories import RepositoryService
-from .schemas import Analysis, Assessment, RepositoryRequest
+from .schemas import Analysis, Assessment, AssessmentRequest, RepositoryRequest
 
 
 router = APIRouter(prefix="/api/repositories")
@@ -37,7 +37,7 @@ async def analyze_repository(
 
 @router.post("/assess", response_model=Assessment)
 async def assess_repository(
-    request: RepositoryRequest,
+    request: AssessmentRequest,
     settings: Settings = Depends(get_settings),
     repository_service: RepositoryService = Depends(get_repository_service),
     assessment_service: AssessmentService = Depends(get_assessment_service),
@@ -45,4 +45,4 @@ async def assess_repository(
     if not settings.ai_available:
         raise RepoLensError("ai_unavailable", "AI assessment is not configured.", 503)
     snapshot = await repository_service.analyze(request.url)
-    return await assessment_service.assess(snapshot)
+    return await assessment_service.assess(snapshot, language=request.language)

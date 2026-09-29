@@ -53,9 +53,10 @@ def route_clients(route_snapshot):
     class AssessmentStub:
         calls = []
 
-        async def assess(self, snapshot):
+        async def assess(self, snapshot, language="zh"):
             self.calls.append(snapshot)
             return Assessment(
+                language=language,
                 full_name="a/b", status="assessed", overall_score=70,
                 dimensions={name: Dimension(score=70, explanation="Evidence", evidence=["metadata"])
                             for name in ("maintenance", "documentation", "community")},

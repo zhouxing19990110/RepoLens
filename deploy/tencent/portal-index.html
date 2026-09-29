@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="周兴的应用入口：决战21点、沃林学生管理系统、月白AI与RepoLens。">
+  <title>周兴的应用空间</title>
+  <link rel="icon" href="/portal.svg" type="image/svg+xml">
+  <style>
+    :root{color-scheme:light;font-family:Inter,"Microsoft YaHei",system-ui,sans-serif;color:#24202f;background:#f5f3ef}*{box-sizing:border-box}body{margin:0;min-height:100svh;display:flex;flex-direction:column}header,main,footer{width:min(1060px,calc(100% - 48px));margin-inline:auto}header{display:flex;align-items:center;gap:12px;padding-top:34px;font-weight:700;font-size:17px}.mark{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:#292336;color:#fff;font-size:20px}main{flex:1;display:flex;flex-direction:column;justify-content:center;padding-block:60px 80px}.eyebrow{font-size:12px;letter-spacing:.2em;color:#7b7388;margin:0 0 16px}h1{font-size:clamp(32px,5vw,48px);letter-spacing:-.04em;margin:0 0 40px;font-weight:650}.apps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.app{text-decoration:none;color:inherit;background:white;border:1px solid #e5e0e9;border-radius:22px;padding:32px;min-height:294px;display:flex;flex-direction:column;transition:transform .18s,box-shadow .18s}.app:hover{transform:translateY(-4px);box-shadow:0 14px 35px #2923360c}.app:focus-visible{outline:3px solid #7753a1;outline-offset:5px}.game{background:#173f38;color:#f3f8f3;border-color:#173f38}.icon{height:76px;display:flex;align-items:center;margin-bottom:24px}.cards{position:relative;width:84px;height:68px}.card{display:flex;flex-direction:column;justify-content:space-between;background:#fcfaf3;border-radius:7px;width:45px;height:63px;padding:5px 7px;font-family:Georgia,serif;color:#26392f;box-shadow:0 2px 5px #0002;font-size:16px}.card:first-child{position:absolute;left:2px;top:3px;transform:rotate(-12deg)}.card:last-child{position:absolute;left:33px;top:0;transform:rotate(10deg);color:#be5152}.book{height:64px;width:64px;display:grid;place-items:center;border-radius:18px;background:#f0e8fa;color:#6c448f}.book svg{width:36px;height:36px}h2{font-size:25px;margin:0 0 12px;letter-spacing:-.02em}.description{font-size:14px;color:#82788d;margin:0 0 34px;line-height:1.7}.game .description{color:#b4cbc3}.action{margin-top:auto;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600}.arrow{font-size:23px;font-weight:400}.game .action{color:#e4dfaf}footer{padding-bottom:26px;font-size:12px;color:#948c9c;display:flex;justify-content:space-between;gap:12px}@media(max-width:620px){header,main,footer{width:calc(100% - 36px)}header{padding-top:23px}main{padding:48px 0}.apps{grid-template-columns:1fr;gap:18px}.app{padding:26px;min-height:260px}h1{margin-bottom:26px}.icon{margin-bottom:18px}footer{flex-wrap:wrap}}@media(prefers-reduced-motion:reduce){.app{transition:none}.app:hover{transform:none}}
+  .moonwhite{background:#f8f6eb;border-color:#e9e2ce}.moon{height:64px;width:64px;display:grid;place-items:center;border-radius:18px;background:#eae3c9;color:#8a7338}.moon svg{width:38px;height:38px}.moonwhite .action{color:#796432}
+  .repolens{background:#eef5fb;border-color:#d9e7f2}.lens{height:64px;width:64px;display:grid;place-items:center;border-radius:18px;background:#dcecf9;color:#286da2}.lens svg{width:38px;height:38px}.repolens .action{color:#286da2}</style>
+</head>
+<body>
+  <header><span class="mark" aria-hidden="true">Z</span>周兴的应用空间</header>
+  <main>
+    <p class="eyebrow">ZHOU XING · APPS</p>
+    <h1>今天，从这里开始。</h1>
+    <div class="apps">
+      <a class="app game" href="/blackjack/">
+        <div class="icon" aria-hidden="true"><div class="cards"><span class="card"><b>A</b><span>♠</span></span><span class="card"><b>K</b><span>♥</span></span></div></div>
+        <h2>决战21点</h2><p class="description">开始一局，练习你的判断与策略。</p>
+        <span class="action">进入游戏 <span class="arrow" aria-hidden="true">↗</span></span>
+      </a>
+      <a class="app" href="/wolin/">
+        <div class="icon" aria-hidden="true"><span class="book"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5h10a4 4 0 0 1 4 4v19a5 5 0 0 0-4-2H5z"/><path d="M19 9a4 4 0 0 1 4-4h5v21h-5a5 5 0 0 0-4 2M9 11h5m-5 5h5"/></svg></span></div>
+        <h2>沃林学生管理系统</h2><p class="description">管理学生、班级、成绩与就业信息。</p>
+        <span class="action">登录管理系统 <span class="arrow" aria-hidden="true">↗</span></span>
+      </a>
+      <a class="app moonwhite" href="/yuebai/">
+        <div class="icon" aria-hidden="true"><span class="moon"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M26 19.5A11.5 11.5 0 0 1 12.5 6a11.5 11.5 0 1 0 13.5 13.5Z"/><path d="m23 4 .9 3.1L27 8l-3.1.9L23 12l-.9-3.1L19 8l3.1-.9Z"/></svg></span></div>
+        <h2>月白AI</h2><p class="description">与 AI 聊天、深度思考，也探索新的灵感。</p>
+        <span class="action">开始对话 <span class="arrow" aria-hidden="true">↗</span></span>
+      </a>
+      <a class="app repolens" href="/repolens/">
+        <div class="icon" aria-hidden="true"><span class="lens"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="13" r="8"/><path d="m19 19 8 8m-16-17-3 3 3 3m4-6 3 3-3 3"/></svg></span></div>
+        <h2>RepoLens</h2><p class="description">分析 GitHub 仓库，查看活跃度、语言构成与 AI 评估。</p>
+        <span class="action">分析仓库 <span class="arrow" aria-hidden="true">↗</span></span>
+      </a>
+    </div>
+  </main>
+  <footer><span>zhouxing199901.site</span><span>游戏、学习与灵感，各有天地。</span></footer>
+</body>
+</html>

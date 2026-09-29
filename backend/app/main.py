@@ -6,7 +6,8 @@ from datetime import datetime, timezone
 import httpx
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from .assessment import AssessmentService
 from .cache import TTLCache
@@ -43,7 +44,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             app.state.assessment_service = AssessmentService(ai_http, resolved_settings)
             yield
 
-    app = FastAPI(title="RepoLens", lifespan=lifespan)
+    app = FastAPI(title="RepoLens", lifespan=lifespan, root_path=resolved_settings.root_path)
     app.state.settings = resolved_settings
     app.include_router(router)
 
@@ -68,6 +69,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.get("/api/health")
     async def health() -> dict[str, str]:
         return {"status": "ok"}
+
+    if (resolved_settings.static_dir / "index.html").is_file():
+        @app.get("/", include_in_schema=False)
+        async def frontend() -> FileResponse:
+            return FileResponse(resolved_settings.static_dir / "index.html", headers={"Cache-Control": "no-cache"})
+
+        assets = resolved_settings.static_dir / "assets"
+        if assets.is_dir():
+            app.mount("/assets", StaticFiles(directory=assets), name="assets")
 
     return app
 

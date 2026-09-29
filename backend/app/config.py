@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     ai_api_key: str = Field(default="", repr=False)
     ai_base_url: str = ""
     ai_model: str = ""
+    root_path: str = ""
+    static_dir: Path = Path(__file__).resolve().parents[2] / "frontend" / "dist"
 
     @property
     def ai_available(self) -> bool:

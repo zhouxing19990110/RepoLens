@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-09-28T08:59:53.834757+00:00",
+  "url": "https://203.195.219.128/repolens/",
+  "repository": "pallets/flask",
+  "repository_report_rendered": true,
+  "language_and_activity_charts_rendered": true,
+  "chinese_ai_assessment_rendered": true,
+  "browser_ai_score": 83,
+  "language_switch_preserves_loaded_results": true,
+  "language_preference_survives_reload": true,
+  "reload_returns_to_empty_report_by_design": true,
+  "console_warnings_errors": [],
+  "screenshot": "tencent-browser-verification.png"
+}

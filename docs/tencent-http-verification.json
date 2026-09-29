@@ -1,0 +1,233 @@
+{
+  "checked_at": "2026-09-28T08:57:20.428630+00:00",
+  "base": "https://203.195.219.128/repolens",
+  "tls_verification": true,
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/repolens/assets/index-DWCS-tbA.js",
+      "status": 200
+    },
+    {
+      "path": "/repolens/assets/index-BPGyrf1z.css",
+      "status": 200
+    },
+    {
+      "path": "/api/health",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/.env",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "path": "/backend/.env",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "path": "/Dockerfile",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "path": "/backend/app/config.py",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "path": "/assets/missing.js",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "path": "/api/missing",
+      "status": 404,
+      "expected": 404
+    }
+  ],
+  "analyze": {
+    "status": 200,
+    "response": {
+      "full_name": "pallets/flask",
+      "url": "https://github.com/pallets/flask",
+      "description": "The Python micro framework for building web applications.",
+      "license": "BSD-3-Clause",
+      "pushed_at": "2026-09-08T16:40:53Z",
+      "stars": 74802,
+      "forks": 17007,
+      "open_issues": 1,
+      "open_pull_requests": 3,
+      "languages": [
+        {
+          "name": "Python",
+          "bytes": 565759,
+          "percentage": 99.89123813727655
+        },
+        {
+          "name": "HTML",
+          "bytes": 405,
+          "percentage": 0.07150739351136615
+        },
+        {
+          "name": "Shell",
+          "bytes": 193,
+          "percentage": 0.03407636283381152
+        },
+        {
+          "name": "CSS",
+          "bytes": 18,
+          "percentage": 0.0031781063782829397
+        }
+      ],
+      "activity": [
+        {
+          "week_start": 1783209600,
+          "commits": 0
+        },
+        {
+          "week_start": 1783814400,
+          "commits": 3
+        },
+        {
+          "week_start": 1784419200,
+          "commits": 0
+        },
+        {
+          "week_start": 1785024000,
+          "commits": 2
+        },
+        {
+          "week_start": 1785628800,
+          "commits": 0
+        },
+        {
+          "week_start": 1786233600,
+          "commits": 5
+        },
+        {
+          "week_start": 1786838400,
+          "commits": 1
+        },
+        {
+          "week_start": 1787443200,
+          "commits": 0
+        },
+        {
+          "week_start": 1788048000,
+          "commits": 0
+        },
+        {
+          "week_start": 1788652800,
+          "commits": 1
+        },
+        {
+          "week_start": 1789257600,
+          "commits": 0
+        },
+        {
+          "week_start": 1789862400,
+          "commits": 0
+        }
+      ],
+      "availability": {
+        "issues": "available",
+        "pull_requests": "available",
+        "languages": "available",
+        "activity": "available",
+        "readme": "available"
+      },
+      "warnings": [],
+      "retrieved_at": "2026-09-28T08:57:22.765894Z",
+      "ai_available": true
+    }
+  },
+  "assess": {
+    "status": 200,
+    "response": {
+      "language": "zh",
+      "full_name": "pallets/flask",
+      "status": "assessed",
+      "overall_score": 81,
+      "dimensions": {
+        "maintenance": {
+          "score": 80,
+          "explanation": "最近一次推送为2026-09-08，距快照约20天，表明项目仍在维护；过去12周中有多个非零提交周（如3、2、5、1、1），部分周提交为0，符合稳定项目偶尔变更的特征。",
+          "evidence": [
+            "metadata",
+            "activity"
+          ]
+        },
+        "documentation": {
+          "score": 85,
+          "explanation": "README 明确说明项目用途，提供简单使用示例和贡献指引链接；检测到 BSD-3-Clause 许可证元数据。但 README 未展示详细安装/设置步骤，故稍有扣分。",
+          "evidence": [
+            "readme",
+            "license",
+            "metadata"
+          ]
+        },
+        "community": {
+          "score": 75,
+          "explanation": "星标74802、复刻17007，表明极高人气；开放 issue 仅1、PR 仅3，但缺少评论、关闭率、响应时间等互动背景，无法判断维护者响应质量。",
+          "evidence": [
+            "metadata",
+            "community"
+          ]
+        }
+      },
+      "evidence": {
+        "metadata": "Repository: pallets/flask. Snapshot retrieved at: 2026-09-28T08:57:22.765894+00:00 (UTC). Description: The Python micro framework for building web applications.. Stars: 74802; forks: 17007. Last push: 2026-09-08T16:40:53+00:00. License: BSD-3-Clause.",
+        "activity": "Completed UTC weeks (Unix start, commits): 1783209600: 0, 1783814400: 3, 1784419200: 0, 1785024000: 2, 1785628800: 0, 1786233600: 5, 1786838400: 1, 1787443200: 0, 1788048000: 0, 1788652800: 1, 1789257600: 0, 1789862400: 0",
+        "readme": "<div align=\"center\"><img src=\"https://raw.githubusercontent.com/pallets/flask/refs/heads/stable/docs/_static/flask-name.svg\" alt=\"\" height=\"150\"></div>\n\n# Flask\n\nFlask is a lightweight [WSGI] web application framework. It is designed\nto make getting started quick and easy, with the ability to scale up to\ncomplex applications. It began as a simple wrapper around [Werkzeug]\nand [Jinja], and has become one of the most popular Python web\napplication frameworks.\n\nFlask offers suggestions, but doesn't enforce any dependencies or\nproject layout. It is up to the developer to choose the tools and\nlibraries they want to use. There are many extensions provided by the\ncommunity that make adding new functionality easy.\n\n[WSGI]: https://wsgi.readthedocs.io/\n[Werkzeug]: https://werkzeug.palletsprojects.com/\n[Jinja]: https://jinja.palletsprojects.com/\n\n## A Simple Example\n\n```python\n# save this as app.py\nfrom flask import Flask\n\napp = Flask(__name__)\n\n@app.route(\"/\")\ndef hello():\n    return \"Hello, World!\"\n```\n\n```\n$ flask run\n  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)\n```\n\n## Donate\n\nThe Pallets organization develops and supports Flask and the libraries\nit uses. In order to grow the community of contributors and users, and\nallow the maintainers to devote more time to the projects, [please\ndonate today].\n\n[please donate today]: https://palletsprojects.com/donate\n\n## Contributing\n\nSee our [detailed contributing documentation][contrib] for many ways to\ncontribute, including reporting issues, requesting features, asking or answering\nquestions, and making PRs.\n\n[contrib]: https://palletsprojects.com/contributing/\n",
+        "license": "GitHub license metadata: BSD-3-Clause.",
+        "community": "Open issues: 1; Open pull requests: 3."
+      },
+      "limitations": [
+        "未提供代码质量、安全性或正确性信息，本次评估不涉及这些方面。",
+        "缺少安装/设置步骤、发布周期和贡献者响应时间等证据。",
+        "社区评估仅基于星标、复刻和开放计数，未纳入 issue/PR 讨论或关闭情况。"
+      ],
+      "provider": "api.deepseek.com",
+      "model": "deepseek-v4-pro",
+      "assessed_at": "2026-09-28T08:57:49.819089Z"
+    }
+  },
+  "cohosts": [
+    {
+      "path": "/",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/blackjack/",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/wolin/",
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "path": "/yuebai/",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/yuebai/api/health",
+      "status": 200,
+      "expected": 200
+    }
+  ],
+  "redirect": {
+    "status": 308,
+    "location": "/repolens/"
+  }
+}

@@ -38,3 +38,25 @@ Before the repair, the app returned a 502 caused by inherited proxy settings. A 
 ## Live AI verification
 
 Live AI verification not run: credentials or connectivity unavailable. No `backend/.env` was present during this verification, so the AI-disabled path was exercised offline. A real AI assessment requires server-side `AI_API_KEY`, `AI_BASE_URL`, and `AI_MODEL`; only then can validated dimensions, computed score, evidence, and model label be checked against a live response.
+
+## Chinese / English interface (2026-09-28)
+
+- Added Chinese as the first-visit default, an accessible header language selector, and local-storage persistence with a safe fallback when storage is unavailable.
+- Centralized typed interface messages and cached locale-specific number/date formatting. Structured API errors preserve error codes and retry timing for localized display. Activity graph scaling uses the same 12-week slice as its table.
+- Validation: all 28 frontend tests passed; an additional API error-metadata test was then added and the updated 7-test API suite passed (29 tests total across the current suites). TypeScript checking and production build passed.
+- Headless Chrome checked both languages at 1440px and 375px, with no horizontal overflow or browser errors. Language switching preserved metrics and AI results, caused no additional API calls, and persisted English after reload.
+- Browser verification used intercepted fixture responses, not live GitHub or AI calls. Repository descriptions, evidence, and AI response prose remain in their original language.
+
+## Backend outage recovery (2026-09-28)
+
+- Reproduced the reported generic Chinese failure: only Vite was listening; port 8000 had no service. The Vite analysis proxy returned HTTP 500 with an empty body.
+- Restarted uvicorn. Health checks through the frontend proxy passed; a real `pallets/flask` analysis returned HTTP 200 with no warnings. Live Chrome also loaded the repository report without an error alert; no AI request was made.
+- Added a localized service-unavailable fallback for unstructured HTTP 5xx responses while preserving structured backend errors.
+- Targeted API and locale suites: 19 passed. TypeScript checking and production build passed.
+
+## AI assessment language (2026-09-28)
+
+- Assessment requests now accept validated `language: zh | en` (default `zh`). The server instructs the provider to generate every explanation and limitation in the requested language, while preserving schema keys and evidence identifiers; responses include the requested language.
+- The UI passes its selected language. Existing results remain visible on a switch, with a regenerate notice when languages differ; there is no automatic AI call. Original evidence is explicitly labeled and expandable.
+- Backend suite: 95 passed. Frontend: API 12, locale 8, charts 7 passed; after correcting the unchanged analyze-call expectation, the 9-test App suite passed. TypeScript checking and production build passed.
+- Restarted the local backend and made one real Chinese AI assessment through the frontend proxy for `pallets/flask`: HTTP 200, language `zh`, all three dimension explanations and all four limitations returned in Chinese. Original evidence and identifiers remain unchanged. Provider language adherence is instructed, not mechanically guaranteed for all future responses.

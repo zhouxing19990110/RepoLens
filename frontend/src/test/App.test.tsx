@@ -1,4 +1,5 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { render } from './render';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
@@ -90,7 +91,7 @@ describe('independent AI assessment', () => {
     render(<AssessmentPanel repositoryUrl={sample.url} enabled />);
     expect(screen.getByText(/public metadata and a limited README excerpt/i)).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: /assess project health/i }));
-    expect(assess).toHaveBeenCalledWith(sample.url, expect.any(AbortSignal));
+    expect(assess).toHaveBeenCalledWith(sample.url, expect.any(AbortSignal), 'en');
     expect(screen.getByRole('status')).toHaveTextContent(/assessing/i);
     expect(screen.getByRole('button', { name: /assess project health/i })).toBeDisabled();
     await act(async () => { finish(assessed); });

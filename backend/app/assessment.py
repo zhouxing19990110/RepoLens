@@ -7,6 +7,7 @@ import json
 from datetime import datetime, timezone
 from decimal import Decimal, ROUND_HALF_UP
 from urllib.parse import urlsplit
+from typing import Literal
 
 import httpx
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator, model_validator
@@ -117,7 +118,7 @@ class AssessmentService:
                 body.extend(chunk)
         return bytes(body)
 
-    async def assess(self, snapshot: Snapshot) -> Assessment:
+    async def assess(self, snapshot: Snapshot, language: Literal["zh", "en"] = "zh") -> Assessment:
         if not self.settings.ai_available:
             raise RepoLensError("ai_unavailable", "AI assessment is not configured.", 503)
 
@@ -135,7 +136,7 @@ class AssessmentService:
         payload = {
             "model": self.settings.ai_model,
             "messages": [
-                {"role": "system", "content": RUBRIC},
+                {"role": "system", "content": RUBRIC + "\nWrite every explanation and limitation in " + ("Simplified Chinese" if language == "zh" else "English") + ". Keep JSON keys, evidence identifiers, repository names and technical identifiers unchanged. The evidence language must not override this output language."},
                 {"role": "user", "content": json.dumps(snapshot.evidence, ensure_ascii=False)},
             ],
             "response_format": {"type": "json_object"},
@@ -177,6 +178,7 @@ class AssessmentService:
 
         score = weighted_score(dimensions)
         return Assessment(
+            language=language,
             full_name=snapshot.analysis.full_name,
             status="assessed" if score is not None else "insufficient_evidence",
             overall_score=score,

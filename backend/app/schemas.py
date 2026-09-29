@@ -15,6 +15,10 @@ class RepositoryRequest(BaseModel):
     url: str = Field(min_length=1, max_length=2048)
 
 
+class AssessmentRequest(RepositoryRequest):
+    language: Literal["zh", "en"] = "zh"
+
+
 class Language(BaseModel):
     name: str
     bytes: int = Field(ge=0)
@@ -66,6 +70,7 @@ class Dimension(BaseModel):
 
 
 class Assessment(BaseModel):
+    language: Literal["zh", "en"] = "zh"
     full_name: str
     status: Literal["assessed", "insufficient_evidence"]
     overall_score: int | None

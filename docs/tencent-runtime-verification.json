@@ -1,0 +1,108 @@
+{
+  "checked_at": "2026-09-28T08:57:22.103613+00:00",
+  "containers": [
+    {
+      "name": "/repolens-app-1",
+      "id": "e641a7e55e68009edf9dfe70ebccd517a6735127bf40d873320a1057df90cf7f",
+      "image": "repolens:20260928-initial",
+      "image_id": "sha256:6386520292ee53a243e764686ae6dc6a79744856529cb0ac230c2a44baee5c41",
+      "started_at": "2026-09-28T08:56:58.361699546Z",
+      "status": "running",
+      "health": "healthy",
+      "user": "10001:10001",
+      "read_only": true,
+      "memory": 536870912,
+      "nano_cpus": 1000000000,
+      "ports": {},
+      "networks": [
+        "wolin-cloud_frontend"
+      ]
+    },
+    {
+      "name": "/wolin-cloud-gateway-1",
+      "id": "f2c253e0b0a06ae61580efd4d244a3c36e32309f11a6372dab55d9a6b2df8dbd",
+      "image": "caddy:2-alpine",
+      "image_id": "sha256:de23def33b17fb5d1290b0f6c2add1d70780e52341896c00a4c8a2a2fe9d355e",
+      "started_at": "2026-09-19T02:08:37.415665973Z",
+      "status": "running",
+      "health": null,
+      "user": "",
+      "read_only": false,
+      "memory": 0,
+      "nano_cpus": 0,
+      "ports": {
+        "443/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "443"
+          }
+        ],
+        "80/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "80"
+          }
+        ]
+      },
+      "networks": [
+        "wolin-cloud_frontend"
+      ]
+    },
+    {
+      "name": "/wolin-cloud-web-1",
+      "id": "57ea892b80f276fa1b5c4f149a7fc83d418c36589875acb8c46046e617b4cf91",
+      "image": "wolin-student-management:cloud",
+      "image_id": "sha256:5f0190886e5e6c28f72da96139712a12e757a7ae5421ff275a1d80842cc3aa3f",
+      "started_at": "2026-09-19T03:41:51.2741986Z",
+      "status": "running",
+      "health": "healthy",
+      "user": "app",
+      "read_only": false,
+      "memory": 0,
+      "nano_cpus": 0,
+      "ports": {},
+      "networks": [
+        "wolin-cloud_database",
+        "wolin-cloud_frontend"
+      ]
+    },
+    {
+      "name": "/wolin-cloud-db-1",
+      "id": "f3b772b2f91c27528491f3841df2f94e05598e1c274728175759b576b6d087d4",
+      "image": "mysql:8.4",
+      "image_id": "sha256:85b9bf2e29cf836ecb8c2a15a935d4ba0c606631dff1dd79531a11983c638f2a",
+      "started_at": "2026-09-18T12:27:02.280976569Z",
+      "status": "running",
+      "health": "healthy",
+      "user": "",
+      "read_only": false,
+      "memory": 0,
+      "nano_cpus": 0,
+      "ports": {},
+      "networks": [
+        "wolin-cloud_database"
+      ]
+    },
+    {
+      "name": "/yuebai-ai-app-1",
+      "id": "7ff3676ef94fbf6e2565385c6b71de601c59558e49ede65ce6cfeab268b5d4a1",
+      "image": "yuebai-ai:20260927-multimodel",
+      "image_id": "sha256:3b9f7d4292692dcae50517afc0de2039682a9ee5713f3f9c2f358ea8690c8ade",
+      "started_at": "2026-09-27T12:35:49.266541047Z",
+      "status": "running",
+      "health": "healthy",
+      "user": "node",
+      "read_only": true,
+      "memory": 536870912,
+      "nano_cpus": 0,
+      "ports": {},
+      "networks": [
+        "wolin-cloud_frontend"
+      ]
+    }
+  ],
+  "existing_container_ids_start_times_images_mounts_unchanged": true,
+  "homepage_and_other_compose_files_unchanged": true,
+  "env_mode": "0o600",
+  "rollback": "bash /home/ubuntu/repolens/backups/20260928-initial/rollback.sh"
+}

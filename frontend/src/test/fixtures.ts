@@ -11,6 +11,7 @@ export const sample: Analysis = {
 };
 
 export const assessed: Assessment = {
+  language: 'en',
   full_name: sample.full_name, status: 'assessed', overall_score: 73,
   dimensions: {
     maintenance: { score: 80, explanation: 'Recent public activity.', evidence: ['metadata'] },

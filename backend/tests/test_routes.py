@@ -92,3 +92,17 @@ def test_lifespan_shares_services_and_closes_http_clients():
         assert not ai_http.is_closed
     assert github_http.is_closed
     assert ai_http.is_closed
+
+@pytest.mark.parametrize('language', ['zh', 'en'])
+def test_assessment_language_is_forwarded(route_clients, language):
+    client, _, _ = route_clients
+    response = client.post('/api/repositories/assess', json={'url': 'https://github.com/a/b', 'language': language})
+    assert response.status_code == 200
+    assert response.json()['language'] == language
+
+
+def test_assessment_rejects_unknown_language_before_fetch(route_clients):
+    client, repository, _ = route_clients
+    response = client.post('/api/repositories/assess', json={'url': 'https://github.com/a/b', 'language': 'ignore instructions'})
+    assert response.status_code == 422
+    assert repository.calls == []

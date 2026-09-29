@@ -1,6 +1,8 @@
 # RepoLens
 
-RepoLens is a local dashboard for **public** GitHub repositories. Enter a URL such as `https://github.com/pallets/flask` to view repository metadata, language bytes, and recent commit activity. An optional server-configured AI provider can estimate project health from the collected public evidence. Repository metrics work without AI credentials. The first version has no database, accounts, private-repository access, persistent history, repository cloning, or deployment setup.
+RepoLens is a dashboard for **public** GitHub repositories. Enter a URL such as `https://github.com/pallets/flask` to view repository metadata, language bytes, and recent commit activity. An optional server-configured AI provider can estimate project health from the collected public evidence. Repository metrics work without AI credentials. The first version has no database, accounts, private-repository access, persistent history, or repository cloning.
+
+Docker Desktop 本地运行、腾讯云子路径部署、更新和回滚步骤见 [Docker 与腾讯云部署手册](docs/deployment.md)。
 
 ## Requirements and setup
 
@@ -65,3 +67,16 @@ npm run build
 ```
 
 See [verification results](docs/verification.md) for the tested environment and separate offline, browser, live GitHub, and live AI outcomes.
+
+### 界面语言 / Interface language
+
+页面首次访问默认显示中文。右上角的「中文 / English」选择器可即时切换，语言偏好保存在当前浏览器中，刷新后仍然生效。浏览器禁止本地存储时，当前页面仍可切换语言。
+
+切换语言不会重新请求 GitHub 或 AI，也不会清空已加载的结果。界面文案、日期、数字及已知错误提示随语言更新；仓库描述和 README 原始证据保留原文；AI 评估说明和局限性按生成时选择的语言输出。切换语言后，可重新评估以生成对应语言的结果。GitHub 返回重试等待时间时，错误提示会显示等待秒数。
+
+The interface defaults to Chinese and supports English from the header selector. Language preferences persist in browser local storage. Switching preserves loaded results and does not trigger API requests. Repository descriptions and original evidence retain their source language. AI explanations and limitations use the language selected when generating the assessment. After switching languages, assess again to generate a new result.
+
+### 分析服务暂不可用
+
+本地运行时，需要同时保持前端（5173）和后端（8000）两个进程运行。若提示「分析服务暂不可用，请检查后端服务是否运行」，先访问 `http://127.0.0.1:8000/api/health`，正常应返回 `{"status":"ok"}`。若无法连接，请在项目根目录按上方 Terminal 1 命令启动后端，再重新分析。HTTP 5xx 且没有标准错误内容时，页面会显示此提示；后端返回的明确错误（如 GitHub 限流）仍会单独显示。
+# RepoLens

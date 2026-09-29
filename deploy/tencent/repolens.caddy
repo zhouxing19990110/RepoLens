@@ -1,0 +1,9 @@
+# Merge inside the existing public site blocks; never replace the whole Caddyfile.
+redir /repolens /repolens/ 308
+handle /repolens/* {
+    reverse_proxy repolens:8000 {
+        transport http {
+            response_header_timeout 120s
+        }
+    }
+}

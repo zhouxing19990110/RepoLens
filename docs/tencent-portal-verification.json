@@ -1,0 +1,42 @@
+{
+  "checked_at": "2026-09-28T09:08:55.802136+00:00",
+  "homepage": "https://203.195.219.128/",
+  "new_entry": "/repolens/",
+  "homepage_sha256": "e735d5f9ae4bab4c301e2a592cd2ff22ad51471b73b2b5861c7f34072bb270e0",
+  "container_ids_start_times_images_mounts_unchanged": true,
+  "caddy_config_unchanged": true,
+  "tls_verified": true,
+  "checks": [
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/repolens/",
+      "status": 200
+    },
+    {
+      "path": "/repolens/api/health",
+      "status": 200
+    },
+    {
+      "path": "/blackjack/",
+      "status": 200
+    },
+    {
+      "path": "/wolin/",
+      "status": 401
+    },
+    {
+      "path": "/yuebai/",
+      "status": 200
+    },
+    {
+      "path": "/yuebai/api/health",
+      "status": 200
+    }
+  ],
+  "rollback": "/home/ubuntu/repolens/backups/20260928-portal/rollback.sh",
+  "browser_entry_navigation_verified": true,
+  "screenshot": "tencent-portal-repolens.png"
+}

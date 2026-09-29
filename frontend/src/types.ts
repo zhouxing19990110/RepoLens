@@ -21,6 +21,7 @@ export interface Analysis {
 }
 export interface Dimension { score: number | null; explanation: string; evidence: string[] }
 export interface Assessment {
+  language: 'zh' | 'en';
   full_name: string;
   status: 'assessed' | 'insufficient_evidence';
   overall_score: number | null;
